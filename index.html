@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graded Collection — Engineered for the Obsessed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --void: #080808;
+    --carbon: #111111;
+    --surface: #1a1a1a;
+    --border: #2a2a2a;
+    --muted: #444444;
+    --text-secondary: #888888;
+    --text-primary: #f0f0f0;
+    --signal: #c8ff00;
+    --signal-dim: rgba(200,255,0,0.08);
+    --signal-border: rgba(200,255,0,0.2);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--signal); }
+
+  .nav-cta {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--void);
+    background: var(--signal);
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    gap: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(200,255,0,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--signal);
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 7vw, 104px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--signal);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 420px;
+    margin-bottom: 48px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--void);
+    background: var(--signal);
+    border: none;
+    padding: 16px 40px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover::after { opacity: 0.1; }
+
+  .btn-ghost {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0.5px solid var(--border);
+    padding: 16px 32px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--muted); color: var(--text-primary); }
+
+  /* HERO IMAGE */
+  .hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-img-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .hero-img-wrap img {
+    width: 100%;
+    display: block;
+    filter: brightness(0.95) contrast(1.05);
+  }
+
+  .hero-img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 0.5px solid var(--signal-border);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .grade-badge {
+    position: absolute;
+    top: 20px; right: -16px;
+    background: var(--carbon);
+    border: 0.5px solid var(--signal-border);
+    padding: 12px 16px;
+    z-index: 3;
+  }
+
+  .grade-badge .grade-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--signal);
+    line-height: 1;
+  }
+
+  .grade-badge .grade-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* TICKER */
+  .ticker {
+    background: var(--signal);
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .ticker-inner {
+    display: inline-flex;
+    animation: ticker 20s linear infinite;
+  }
+
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--void);
+    padding: 0 40px;
+  }
+
+  .ticker-dot {
+    color: rgba(0,0,0,0.3);
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    letter-spacing: 2px;
+    color: var(--text-primary);
+    margin-bottom: 64px;
+    max-width: 500px;
+    line-height: 1;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+  }
+
+  .feature-card {
+    background: var(--void);
+    padding: 40px 32px;
+    transition: background 0.3s;
+  }
+
+  .feature-card:hover {
+    background: var(--carbon);
+  }
+
+  .feature-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--signal);
+    margin-bottom: 20px;
+  }
+
+  .feature-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* GALLERY */
+  .gallery {
+    padding: 0 48px 120px;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    background: var(--carbon);
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.9) contrast(1.05) saturate(0.85);
+    transition: filter 0.4s, transform 0.5s;
+  }
+
+  .gallery-item:hover img {
+    filter: brightness(1) contrast(1.05) saturate(1);
+    transform: scale(1.02);
+  }
+
+  .gallery-item.tall { grid-row: span 2; }
+
+  .gallery-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 24px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+  }
+
+  /* PRE-ORDER */
+  .preorder {
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    border-top: 0.5px solid var(--border);
+    position: relative;
+  }
+
+  .preorder::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 48px;
+    right: 48px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .preorder-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 20px;
+  }
+
+  .preorder-label::before {
+    content: '';
+    display: block;
+    width: 8px; height: 8px;
+    background: var(--signal);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .preorder-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .preorder-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 400px;
+  }
+
+  .preorder-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+  }
+
+  .preorder-form input {
+    background: var(--carbon);
+    border: 0.5px solid var(--border);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 16px 20px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .preorder-form input::placeholder { color: var(--muted); }
+  .preorder-form input:focus { border-color: var(--signal); }
+
+  .preorder-form .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 18px;
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+
+  .form-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .preorder-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .stat {
+    background: var(--carbon);
+    padding: 28px 24px;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-num span { color: var(--signal); }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+  }
+
+  .compat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .compat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+  }
+
+  .compat-item::before {
+    content: '';
+    display: block;
+    width: 4px; height: 4px;
+    background: var(--signal);
+    flex-shrink: 0;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .footer-logo span { color: var(--signal); }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* NFC SPOTLIGHT */
+  .nfc-section {
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    border-top: 0.5px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nfc-section::after {
+    content: '';
+    position: absolute;
+    bottom: -200px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(61,90,254,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .nfc-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nfc-ring-wrap {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nfc-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 0.5px solid rgba(61,90,254,0.3);
+    animation: nfc-pulse 2.4s ease-out infinite;
+  }
+
+  .nfc-ring:nth-child(1) { width: 100%; height: 100%; animation-delay: 0s; }
+  .nfc-ring:nth-child(2) { width: 72%; height: 72%; animation-delay: 0.4s; }
+  .nfc-ring:nth-child(3) { width: 44%; height: 44%; animation-delay: 0.8s; }
+
+  @keyframes nfc-pulse {
+    0% { opacity: 0; transform: scale(0.85); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: scale(1.1); }
+  }
+
+  .nfc-core {
+    width: 88px;
+    height: 88px;
+    background: var(--carbon);
+    border: 0.5px solid #3D5AFE;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    position: relative;
+  }
+
+  .nfc-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: #3D5AFE;
+  }
+
+  .nfc-phone {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    width: 72px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    z-index: 3;
+  }
+
+  .nfc-phone-dot {
+    width: 20px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .nfc-phone-screen {
+    width: 52px;
+    height: 72px;
+    background: var(--carbon);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .nfc-screen-line {
+    width: 100%;
+    height: 3px;
+    background: #3D5AFE;
+    border-radius: 1px;
+    opacity: 0;
+    animation: screen-load 2.4s ease-in-out infinite;
+  }
+  .nfc-screen-line:nth-child(1) { animation-delay: 1.2s; }
+  .nfc-screen-line:nth-child(2) { width: 70%; animation-delay: 1.4s; opacity: 0.6; }
+  .nfc-screen-line:nth-child(3) { width: 85%; animation-delay: 1.6s; opacity: 0.4; }
+
+  @keyframes screen-load {
+    0%, 40% { opacity: 0; }
+    60%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .nfc-arrow {
+    position: absolute;
+    right: 68px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #3D5AFE;
+    opacity: 0;
+    animation: arrow-blink 2.4s ease-in-out infinite;
+    animation-delay: 0.8s;
+    z-index: 4;
+  }
+
+  @keyframes arrow-blink {
+    0%, 30% { opacity: 0; transform: translateY(-50%) translateX(-6px); }
+    60% { opacity: 1; transform: translateY(-50%) translateX(0); }
+    100% { opacity: 0; transform: translateY(-50%) translateX(2px); }
+  }
+
+  .nfc-mag-section {
+    margin-top: 48px;
+    padding-top: 48px;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .mag-visual {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 32px 0;
+    position: relative;
+  }
+
+  .mag-lid {
+    width: 160px;
+    height: 32px;
+    background: var(--carbon);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: mag-float 3s ease-in-out infinite;
+  }
+
+  @keyframes mag-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .mag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--signal);
+    margin: 0 3px;
+  }
+
+  .mag-body {
+    width: 160px;
+    height: 32px;
+    background: var(--surface);
+    border: 0.5px solid var(--muted);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+  }
+
+  .mag-body-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    margin: 0 3px;
+  }
+
+  .mag-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* RESPONSIVE additions */
+  @media (max-width: 900px) {
+    .nfc-section { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+    .nfc-ring-wrap { width: 200px; height: 200px; }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
+    .hero-visual { order: -1; }
+    .hero-img-wrap { max-width: 340px; margin: 0 auto; }
+    .features { padding: 80px 24px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .gallery { padding: 0 24px 80px; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-item.tall { grid-row: span 1; }
+    .preorder { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">GC<span>°</span></a>
+  <a href="#preorder" class="nav-cta">Pre-order</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Now taking pre-orders</div>
+    <h1 class="hero-title">
+      Display<br>your grade.<br>
+      <em>Own the wall.</em>
+    </h1>
+    <p class="hero-sub">Custom-manufactured display frames engineered for PSA and WATA graded video games. Wall mount or desk stand. Built for collectors who don't compromise.</p>
+    <div class="hero-actions">
+      <a href="#preorder" class="btn-primary">Reserve yours</a>
+      <a href="#features" class="btn-ghost">See features</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-img-wrap">
+      <img src="IMG_5702.png" alt="Graded Collection display frames mounted on wall showing five graded Halo games">
+      <div class="grade-badge">
+        <div class="grade-num">9.8</div>
+        <div class="grade-label">Display ready</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">PSA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">WATA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Magnetic Lid <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NFC Enabled <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Wall Mount <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Desk Stand <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Matte Black Finish <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Front &amp; Back Visibility <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Precision Fit <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Engineered for the Obsessed <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">PSA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">WATA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Magnetic Lid <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NFC Enabled <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Wall Mount <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Desk Stand <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Matte Black Finish <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Front &amp; Back Visibility <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Precision Fit <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Engineered for the Obsessed <span class="ticker-dot">◆</span></span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Why GC°</div>
+  <h2 class="section-title">Built different.</h2>
+
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-num">01</div>
+      <div class="feature-title">Precision fit</div>
+      <p class="feature-desc">Machined to exact WATA and PSA slab dimensions. Snap in, no rattle, no shimming, no compromises.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">02</div>
+      <div class="feature-title">Front & back visibility</div>
+      <p class="feature-desc">Clear acrylic window on both sides. See the grade label, read the box details — without ever touching the slab.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">03</div>
+      <div class="feature-title">Magnetic lid</div>
+      <p class="feature-desc">The top lid attaches via concealed magnets — worry-free loading with a satisfying, secure hold. No clips, no screws, no stress.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">04</div>
+      <div class="feature-title">NFC embedded</div>
+      <p class="feature-desc">A hidden NFC tag inside the lid lets you program your certification URL. Tap any smartphone to pull up your PSA or WATA listing instantly.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">05</div>
+      <div class="feature-title">Two display modes</div>
+      <p class="feature-desc">Integrated desk stand for shelf display. Keyhole wall mounts built into the back. One frame, two ways to flex.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">06</div>
+      <div class="feature-title">Matte black finish</div>
+      <p class="feature-desc">Textured matte black coating disappears behind your game art. The frame is the frame — not the focus.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">07</div>
+      <div class="feature-title">Gallery-ready</div>
+      <p class="feature-desc">Consistent sizing means your collection lines up perfectly. Build a wall worth photographing.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">08</div>
+      <div class="feature-title">Custom manufactured</div>
+      <p class="feature-desc">Not a shelf product. Not an adapter. Engineered from the ground up specifically for graded games.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery">
+  <div class="gallery-grid">
+    <div class="gallery-item tall">
+      <img src="IMG_5682.png" alt="Graded Collection frame front view with Halo 2 WATA 9.8">
+      <div class="gallery-caption">Desk stand — front view</div>
+    </div>
+    <div class="gallery-item">
+      <img src="IMG_5683.png" alt="Graded Collection frame rear view showing back of graded game">
+      <div class="gallery-caption">Full rear visibility</div>
+    </div>
+    <div class="gallery-item">
+      <img src="IMG_5702.png" alt="Five graded Halo games displayed on wall in Graded Collection frames">
+      <div class="gallery-caption">Wall gallery — five deep</div>
+    </div>
+  </div>
+</section>
+
+<!-- NFC + MAGNETIC SPOTLIGHT -->
+<section class="nfc-section">
+  <div>
+    <div class="section-label">Smart by design</div>
+    <h2 class="section-title" style="font-size: clamp(36px,4vw,56px); margin-bottom:20px;">Tap to verify.<br>Snap to secure.</h2>
+    <p style="font-size:15px;font-weight:300;color:var(--text-secondary);line-height:1.7;max-width:420px;margin-bottom:40px;">
+      Two features that no other display frame has. Each GC° frame ships with a hidden NFC tag embedded in the lid and a precision magnetic closure — so your collection is as smart as it is secure.
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:0;border:0.5px solid var(--border);">
+      <div style="padding:28px 32px;border-bottom:0.5px solid var(--border);">
+        <div style="font-size:10px;letter-spacing:3px;color:#3D5AFE;font-weight:500;text-transform:uppercase;margin-bottom:10px;">NFC tag — embedded</div>
+        <div style="font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Tap any phone. Pull up the listing.</div>
+        <p style="font-size:14px;font-weight:300;color:var(--text-secondary);line-height:1.6;">Program your certification URL once. Any NFC-capable smartphone held near the lid instantly opens your PSA or WATA cert page — no app, no QR code, no friction.</p>
+      </div>
+      <div style="padding:28px 32px;">
+        <div style="font-size:10px;letter-spacing:3px;color:var(--signal);font-weight:500;text-transform:uppercase;margin-bottom:10px;">Magnetic lid — concealed</div>
+        <div style="font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Worry-free loading. Rock-solid hold.</div>
+        <p style="font-size:14px;font-weight:300;color:var(--text-secondary);line-height:1.6;">The lid is held by embedded magnets — strong enough to stay put on the wall, easy enough to open without tools. Load your slab safely, every time.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="nfc-visual">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:64px;width:100%;">
+
+      <!-- NFC animation -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="nfc-ring-wrap">
+          <div class="nfc-ring"></div>
+          <div class="nfc-ring"></div>
+          <div class="nfc-ring"></div>
+          <div class="nfc-core">
+            <div class="nfc-icon">NFC</div>
+          </div>
+          <div class="nfc-arrow">→</div>
+          <div class="nfc-phone">
+            <div class="nfc-phone-dot"></div>
+            <div class="nfc-phone-screen">
+              <div class="nfc-screen-line"></div>
+              <div class="nfc-screen-line"></div>
+              <div class="nfc-screen-line"></div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase;">Tap → cert page opens</div>
+      </div>
+
+      <!-- Magnetic animation -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="font-size:10px;letter-spacing:3px;color:var(--signal);text-transform:uppercase;margin-bottom:12px;">Magnetic closure</div>
+        <div class="mag-visual" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="mag-lid">
+            <div class="mag-dot"></div>
+            <div class="mag-dot"></div>
+            <div class="mag-dot"></div>
+          </div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:1px;">↓ secure</div>
+          <div class="mag-body">
+            <div class="mag-body-dot"></div>
+            <div class="mag-body-dot"></div>
+            <div class="mag-body-dot"></div>
+          </div>
+        </div>
+        <div style="font-size:11px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase;margin-top:8px;">No clips. No screws.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PRE-ORDER -->
+<section class="preorder" id="preorder">
+  <div>
+    <div class="preorder-label">Pre-order open</div>
+    <h2 class="preorder-title">Reserve your frame.</h2>
+    <p class="preorder-sub">First batch is limited. Drop your info and we'll reach out with pricing, sizing options, and your place in line.</p>
+
+    <div class="preorder-stats">
+      <div class="stat">
+        <div class="stat-num">PSA<span> +</span></div>
+        <div class="stat-label">WATA compatible</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2<span>x</span></div>
+        <div class="stat-label">display modes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">360<span>°</span></div>
+        <div class="stat-label">slab visibility</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">Ltd<span>.</span></div>
+        <div class="stat-label">first run batch</div>
+      </div>
+    </div>
+
+    <div class="compat-list">
+      <div class="compat-item">Compatible with WATA graded standard cases</div>
+      <div class="compat-item">Compatible with PSA graded video game slabs</div>
+      <div class="compat-item">Available in NES, SNES, N64, PS1, Xbox & more</div>
+      <div class="compat-item">Matte black — additional finishes coming soon</div>
+    </div>
+  </div>
+
+  <div>
+    <form class="preorder-form" onsubmit="handleSubmit(event)">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Email address" required>
+      <input type="text" name="collection" placeholder="What system(s) do you collect? (e.g. Xbox, NES)">
+      <button type="submit" class="btn-primary">Secure your spot →</button>
+      <p class="form-note">No payment now. We'll be in touch before anything ships.</p>
+    </form>
+    <div id="form-success" style="display:none; padding: 32px; border: 0.5px solid var(--signal-border); background: var(--signal-dim); text-align: center;">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--signal); letter-spacing:2px; margin-bottom:8px;">You're on the list.</div>
+      <div style="font-size:14px; color:var(--text-secondary); font-weight:300;">We'll reach out with details before the first batch ships.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">GRADED COLLECTION<span>°</span></a>
+  <div class="footer-note">© 2024 Graded Collection. Engineered for the obsessed.</div>
+</footer>
+
+<script>
+  // Scroll animations
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  fadeEls.forEach(el => observer.observe(el));
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    document.querySelector('.preorder-form').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  }
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.borderBottomColor = window.scrollY > 40 ? '#2a2a2a' : 'transparent';
+  });
+</script>
+
+</body>
+</html>
