@@ -226,6 +226,7 @@
     content: '';
     position: absolute;
     inset: -1px;
+    border: 0.5px solid var(--signal-border);
     pointer-events: none;
     z-index: 2;
   }
@@ -591,8 +592,8 @@
     transform: translateY(0);
   }
 
-  /* NFC SPOTLIGHT */
-  .nfc-section {
+  /* ── FEATURE SPOTLIGHT SHARED ── */
+  .spotlight {
     padding: 120px 48px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -603,214 +604,393 @@
     overflow: hidden;
   }
 
-  .nfc-section::after {
-    content: '';
+  .spotlight.reverse { direction: rtl; }
+  .spotlight.reverse > * { direction: ltr; }
+
+  .spotlight-content { display: flex; flex-direction: column; gap: 0; }
+
+  .spotlight-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .spotlight-tag.blue { color: #3D5AFE; }
+  .spotlight-tag.green { color: var(--signal); }
+
+  .spotlight-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 5vw, 72px);
+    letter-spacing: 1px;
+    line-height: 0.95;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+
+  .spotlight-body {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 40px;
+    max-width: 440px;
+  }
+
+  .spotlight-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 0.5px solid var(--border);
+  }
+
+  .spotlight-detail {
+    padding: 20px 24px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .spotlight-detail:last-child { border-bottom: none; }
+
+  .spotlight-detail-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .spotlight-detail-icon.blue { background: rgba(61,90,254,0.12); color: #3D5AFE; border: 0.5px solid rgba(61,90,254,0.3); }
+  .spotlight-detail-icon.green { background: rgba(200,255,0,0.08); color: var(--signal); border: 0.5px solid rgba(200,255,0,0.2); }
+
+  .spotlight-detail-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .spotlight-detail-text span {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .spotlight-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 380px;
+    position: relative;
+  }
+
+  /* ── NFC ANIMATION ── */
+  .nfc-scene {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nfc-glow {
     position: absolute;
-    bottom: -200px; left: -100px;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(61,90,254,0.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .nfc-visual {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .nfc-ring-wrap {
-    position: relative;
-    width: 260px;
-    height: 260px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(61,90,254,0.07) 0%, transparent 70%);
+    border-radius: 50%;
   }
 
   .nfc-ring {
     position: absolute;
     border-radius: 50%;
-    border: 0.5px solid rgba(61,90,254,0.3);
-    animation: nfc-pulse 2.4s ease-out infinite;
+    border: 0.5px solid rgba(61,90,254,0.25);
+    animation: nfc-expand 3s ease-out infinite;
+  }
+  .nfc-ring:nth-child(2) { width: 75%; height: 75%; animation-delay: 0s; }
+  .nfc-ring:nth-child(3) { width: 52%; height: 52%; animation-delay: 0.7s; }
+  .nfc-ring:nth-child(4) { width: 30%; height: 30%; animation-delay: 1.4s; }
+
+  @keyframes nfc-expand {
+    0%   { opacity: 0; transform: scale(0.8); }
+    25%  { opacity: 1; }
+    100% { opacity: 0; transform: scale(1.15); }
   }
 
-  .nfc-ring:nth-child(1) { width: 100%; height: 100%; animation-delay: 0s; }
-  .nfc-ring:nth-child(2) { width: 72%; height: 72%; animation-delay: 0.4s; }
-  .nfc-ring:nth-child(3) { width: 44%; height: 44%; animation-delay: 0.8s; }
-
-  @keyframes nfc-pulse {
-    0% { opacity: 0; transform: scale(0.85); }
-    30% { opacity: 1; }
-    100% { opacity: 0; transform: scale(1.1); }
-  }
-
-  .nfc-core {
-    width: 88px;
-    height: 88px;
+  .nfc-chip {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
     background: var(--carbon);
     border: 0.5px solid #3D5AFE;
-    border-radius: 50%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 2px;
     z-index: 2;
     position: relative;
   }
 
-  .nfc-icon {
+  .nfc-chip-label {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: 2px;
     color: #3D5AFE;
+    line-height: 1;
   }
 
+  .nfc-chip-sub {
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: rgba(61,90,254,0.5);
+    text-transform: uppercase;
+  }
+
+  /* phone floating right */
   .nfc-phone {
     position: absolute;
-    right: -20px;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    background: var(--surface);
+    width: 80px;
+    height: 138px;
+    background: var(--carbon);
     border: 0.5px solid var(--border);
-    border-radius: 12px;
-    width: 72px;
-    height: 120px;
+    border-radius: 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    padding: 10px 7px 10px;
     gap: 6px;
     z-index: 3;
+    animation: phone-tap 3s ease-in-out infinite;
   }
 
-  .nfc-phone-dot {
-    width: 20px;
-    height: 3px;
+  @keyframes phone-tap {
+    0%, 60%, 100% { transform: translateY(-50%) translateX(0); }
+    75% { transform: translateY(-50%) translateX(-6px); }
+    85% { transform: translateY(-50%) translateX(0); }
+  }
+
+  .phone-notch {
+    width: 24px; height: 4px;
     background: var(--border);
     border-radius: 2px;
+    flex-shrink: 0;
   }
 
-  .nfc-phone-screen {
-    width: 52px;
-    height: 72px;
-    background: var(--carbon);
-    border-radius: 4px;
+  .phone-screen {
+    flex: 1;
+    width: 100%;
+    background: #0a0f1e;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 6px;
+    padding: 8px 6px;
+    gap: 5px;
+    overflow: hidden;
   }
 
-  .nfc-screen-line {
-    width: 100%;
-    height: 3px;
+  .phone-screen-bar {
+    height: 4px;
+    border-radius: 2px;
     background: #3D5AFE;
-    border-radius: 1px;
     opacity: 0;
-    animation: screen-load 2.4s ease-in-out infinite;
+    animation: bar-appear 3s ease-in-out infinite;
   }
-  .nfc-screen-line:nth-child(1) { animation-delay: 1.2s; }
-  .nfc-screen-line:nth-child(2) { width: 70%; animation-delay: 1.4s; opacity: 0.6; }
-  .nfc-screen-line:nth-child(3) { width: 85%; animation-delay: 1.6s; opacity: 0.4; }
+  .phone-screen-bar:nth-child(1) { width: 100%; animation-delay: 1.6s; }
+  .phone-screen-bar:nth-child(2) { width: 70%; animation-delay: 1.8s; background: rgba(61,90,254,0.5); }
+  .phone-screen-bar:nth-child(3) { width: 85%; animation-delay: 2.0s; background: rgba(61,90,254,0.3); }
+  .phone-screen-bar:nth-child(4) { width: 55%; animation-delay: 2.2s; background: rgba(61,90,254,0.3); }
 
-  @keyframes screen-load {
-    0%, 40% { opacity: 0; }
-    60%, 80% { opacity: 1; }
+  @keyframes bar-appear {
+    0%, 45% { opacity: 0; transform: translateY(4px); }
+    65%, 85% { opacity: 1; transform: translateY(0); }
     100% { opacity: 0; }
   }
 
-  .nfc-arrow {
+  .nfc-signal-line {
     position: absolute;
-    right: 68px;
     top: 50%;
+    right: 82px;
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(61,90,254,0.6));
     transform: translateY(-50%);
-    font-size: 18px;
-    color: #3D5AFE;
     opacity: 0;
-    animation: arrow-blink 2.4s ease-in-out infinite;
+    animation: signal-flash 3s ease-in-out infinite;
     animation-delay: 0.8s;
-    z-index: 4;
   }
 
-  @keyframes arrow-blink {
-    0%, 30% { opacity: 0; transform: translateY(-50%) translateX(-6px); }
-    60% { opacity: 1; transform: translateY(-50%) translateX(0); }
-    100% { opacity: 0; transform: translateY(-50%) translateX(2px); }
+  @keyframes signal-flash {
+    0%, 50% { opacity: 0; }
+    65%, 80% { opacity: 1; }
+    100% { opacity: 0; }
   }
 
-  .nfc-mag-section {
-    margin-top: 48px;
-    padding-top: 48px;
-    border-top: 0.5px solid var(--border);
-  }
-
-  .mag-visual {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin: 32px 0;
+  /* ── MAGNETIC ANIMATION ── */
+  .mag-scene {
     position: relative;
+    width: 320px;
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
   }
 
-  .mag-lid {
-    width: 160px;
-    height: 32px;
+  .mag-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(200,255,0,0.04) 0%, transparent 70%);
+  }
+
+  /* Frame body */
+  .mag-frame-body {
+    width: 180px;
+    height: 220px;
     background: var(--carbon);
     border: 0.5px solid var(--border);
     border-radius: 4px;
+    position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
-    animation: mag-float 3s ease-in-out infinite;
+    z-index: 2;
   }
 
-  @keyframes mag-float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
+  /* Acrylic window cutout */
+  .mag-frame-window {
+    width: 148px;
+    height: 185px;
+    background: rgba(20,30,45,0.6);
+    border: 0.5px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
   }
 
-  .mag-dot {
-    width: 6px; height: 6px;
+  /* Magnet dots on top edge of body */
+  .mag-body-magnets {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 28px;
+  }
+
+  .mag-body-dot {
+    width: 8px; height: 8px;
     border-radius: 50%;
-    background: var(--signal);
-    margin: 0 3px;
+    background: var(--muted);
+    border: 0.5px solid var(--border);
+    transition: background 0.3s;
   }
 
-  .mag-body {
-    width: 160px;
-    height: 32px;
-    background: var(--surface);
-    border: 0.5px solid var(--muted);
+  /* Lid */
+  .mag-lid {
+    width: 180px;
+    height: 28px;
+    background: #1e1e1e;
+    border: 0.5px solid #3a3a3a;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 2px;
+    gap: 28px;
+    position: absolute;
+    top: 0;
+    z-index: 3;
+    transform-origin: center bottom;
+    animation: lid-snap 4s ease-in-out infinite;
   }
 
-  .mag-body-dot {
-    width: 6px; height: 6px;
+  @keyframes lid-snap {
+    0%, 15%   { transform: translateY(-52px); }
+    30%, 35%  { transform: translateY(-52px); }
+    50%       { transform: translateY(-2px); }
+    52%       { transform: translateY(1px); }
+    55%, 100% { transform: translateY(0px); }
+  }
+
+  .mag-lid-dot {
+    width: 8px; height: 8px;
     border-radius: 50%;
-    background: var(--muted);
-    margin: 0 3px;
+    border: 0.5px solid rgba(200,255,0,0.4);
+    background: rgba(200,255,0,0.15);
+    animation: mag-active 4s ease-in-out infinite;
   }
 
-  .mag-label {
+  @keyframes mag-active {
+    0%, 40%  { background: rgba(200,255,0,0.15); border-color: rgba(200,255,0,0.3); }
+    48%, 60% { background: rgba(200,255,0,0.5); border-color: rgba(200,255,0,0.8); box-shadow: 0 0 6px rgba(200,255,0,0.4); }
+    80%, 100%{ background: rgba(200,255,0,0.15); border-color: rgba(200,255,0,0.3); }
+  }
+
+  /* Field lines between lid and body when approaching */
+  .mag-field {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 28px;
+    z-index: 1;
+    top: 24px;
+  }
+
+  .mag-field-line {
+    width: 1px;
+    height: 20px;
+    background: linear-gradient(to bottom, rgba(200,255,0,0.5), transparent);
+    opacity: 0;
+    animation: field-show 4s ease-in-out infinite;
+  }
+
+  @keyframes field-show {
+    0%, 25%  { opacity: 0; height: 12px; }
+    38%, 46% { opacity: 1; height: 28px; }
+    52%, 100%{ opacity: 0; height: 8px; }
+  }
+
+  /* Label below */
+  .mag-state-label {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 10px;
     letter-spacing: 2px;
-    color: var(--text-secondary);
     text-transform: uppercase;
-    text-align: center;
-    margin-top: 8px;
+    white-space: nowrap;
+  }
+
+  .mag-state-open  { color: var(--text-secondary); animation: label-open 4s ease-in-out infinite; }
+  .mag-state-snap  { color: var(--signal); animation: label-snap 4s ease-in-out infinite; }
+
+  @keyframes label-open {
+    0%, 15%  { opacity: 1; }
+    40%, 100%{ opacity: 0; }
+  }
+  @keyframes label-snap {
+    0%, 45%  { opacity: 0; }
+    60%, 85% { opacity: 1; }
+    100%     { opacity: 0; }
   }
 
   /* RESPONSIVE additions */
   @media (max-width: 900px) {
-    .nfc-section { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
-    .nfc-ring-wrap { width: 200px; height: 200px; }
+    .spotlight { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+    .spotlight.reverse { direction: ltr; }
+    .nfc-scene, .mag-scene { width: 260px; height: 260px; }
+    .mag-scene { height: 300px; }
   }
   @media (max-width: 900px) {
     nav { padding: 16px 24px; }
@@ -856,7 +1036,6 @@
   <div class="hero-visual">
     <div class="hero-img-wrap">
       <img src="images/halo2-hero.png" alt="Graded Collection display frames mounted on wall showing five graded Halo games">
-
   </div>
 </section>
 
@@ -946,13 +1125,12 @@
       <img src="IMG_5683.png" alt="Graded Collection frame rear view showing back of graded game">
       <div class="gallery-caption">Full rear visibility</div>
     </div>
-    <div class="gallery-item-wide">
-      <img src="images/halo-row.png" alt="Five graded Halo games displayed on wall in Graded Collection frames">
+    <div class="gallery-item">
+      <img src="IMG_5702.png" alt="Five graded Halo games displayed on wall in Graded Collection frames">
       <div class="gallery-caption">Wall gallery — five deep</div>
     </div>
   </div>
 </section>
-
 
 <!-- NFC SECTION -->
 <section class="spotlight">
@@ -984,7 +1162,7 @@
       </div>
     </div>
   </div>
- 
+
   <div class="spotlight-visual">
     <div class="nfc-scene">
       <div class="nfc-glow"></div>
@@ -1008,7 +1186,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- MAGNETIC SECTION -->
 <section class="spotlight reverse">
   <div class="spotlight-content">
@@ -1039,7 +1217,7 @@
       </div>
     </div>
   </div>
- 
+
   <div class="spotlight-visual">
     <div class="mag-scene">
       <div class="mag-glow"></div>
@@ -1096,7 +1274,7 @@
     <div class="compat-list">
       <div class="compat-item">Compatible with WATA graded standard cases</div>
       <div class="compat-item">Compatible with PSA graded video game slabs</div>
-      <div class="compat-item">Matte black — additional finishes by request</div>
+      <div class="compat-item">Matte black — additional colors available by request</div>
     </div>
   </div>
 
