@@ -3,735 +3,1115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GC° Frame — Product Render</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Graded Collection — Engineered for the Obsessed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --void: #080808;
     --carbon: #111111;
+    --surface: #1a1a1a;
     --border: #2a2a2a;
-    --text-primary: #f0f0f0;
+    --muted: #444444;
     --text-secondary: #888888;
+    --text-primary: #f0f0f0;
     --signal: #c8ff00;
-    --electric: #3D5AFE;
+    --signal-dim: rgba(200,255,0,0.08);
+    --signal-border: rgba(200,255,0,0.2);
   }
+
+  html { scroll-behavior: smooth; }
 
   body {
     background: var(--void);
     color: var(--text-primary);
     font-family: 'Outfit', sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
-  }
-
-  #canvas-container {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-  }
-
-  canvas { display: block; }
-
-  /* UI OVERLAY */
-  .ui {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 40px 48px;
-  }
-
-  .ui-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 3px;
-    color: var(--text-primary);
-    opacity: 0;
-    animation: fadeIn 1s ease 0.5s forwards;
-  }
-  .logo span { color: var(--signal); }
-
-  .ui-tag {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    opacity: 0;
-    animation: fadeIn 1s ease 0.8s forwards;
-    text-align: right;
-    line-height: 1.8;
-  }
-
-  .ui-tag strong {
-    display: block;
-    color: var(--signal);
-    font-weight: 500;
-  }
-
-  .ui-bottom {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-
-  .ui-title {
-    opacity: 0;
-    animation: fadeIn 1s ease 1.2s forwards;
-  }
-
-  .ui-title h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 6vw, 88px);
-    letter-spacing: 2px;
-    line-height: 0.9;
-    color: var(--text-primary);
-  }
-
-  .ui-title h1 em {
-    font-style: normal;
-    color: var(--signal);
-  }
-
-  .ui-title p {
-    font-size: 13px;
     font-weight: 300;
-    color: var(--text-secondary);
-    letter-spacing: 1px;
-    margin-top: 16px;
+    overflow-x: hidden;
+    cursor: default;
   }
 
-  .ui-specs {
-    opacity: 0;
-    animation: fadeIn 1s ease 1.5s forwards;
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  .page-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
   }
 
-  .spec-item {
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
+    justify-content: space-between;
+    padding: 20px 48px;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--signal); }
+
+  .nav-cta {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--void);
+    background: var(--signal);
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    gap: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(200,255,0,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
     font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--signal);
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 7vw, 104px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--signal);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 420px;
+    margin-bottom: 48px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--void);
+    background: var(--signal);
+    border: none;
+    padding: 16px 40px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover::after { opacity: 0.1; }
+
+  .btn-ghost {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
     font-weight: 400;
     letter-spacing: 1px;
     color: var(--text-secondary);
+    background: transparent;
+    border: 0.5px solid var(--border);
+    padding: 16px 32px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--muted); color: var(--text-primary); }
+
+  /* HERO IMAGE */
+  .hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .spec-dot {
-    width: 5px; height: 5px;
+  .hero-img-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .hero-img-wrap img {
+    width: 100%;
+    display: block;
+    filter: brightness(0.95) contrast(1.05);
+  }
+
+  .hero-img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 0.5px solid var(--signal-border);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .grade-badge {
+    position: absolute;
+    top: 20px; right: -16px;
+    background: var(--carbon);
+    border: 0.5px solid var(--signal-border);
+    padding: 12px 16px;
+    z-index: 3;
+  }
+
+  .grade-badge .grade-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--signal);
+    line-height: 1;
+  }
+
+  .grade-badge .grade-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* TICKER */
+  .ticker {
+    background: var(--signal);
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  .ticker-inner {
+    display: inline-flex;
+    animation: ticker 20s linear infinite;
+  }
+
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--void);
+    padding: 0 40px;
+  }
+
+  .ticker-dot {
+    color: rgba(0,0,0,0.3);
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    letter-spacing: 2px;
+    color: var(--text-primary);
+    margin-bottom: 64px;
+    max-width: 500px;
+    line-height: 1;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+  }
+
+  .feature-card {
+    background: var(--void);
+    padding: 40px 32px;
+    transition: background 0.3s;
+  }
+
+  .feature-card:hover {
+    background: var(--carbon);
+  }
+
+  .feature-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--signal);
+    margin-bottom: 20px;
+  }
+
+  .feature-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* GALLERY */
+  .gallery {
+    padding: 0 48px 120px;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    background: var(--carbon);
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.9) contrast(1.05) saturate(0.85);
+    transition: filter 0.4s, transform 0.5s;
+  }
+
+  .gallery-item:hover img {
+    filter: brightness(1) contrast(1.05) saturate(1);
+    transform: scale(1.02);
+  }
+
+  .gallery-item.tall { grid-row: span 2; }
+
+  .gallery-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 24px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+  }
+
+  /* PRE-ORDER */
+  .preorder {
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    border-top: 0.5px solid var(--border);
+    position: relative;
+  }
+
+  .preorder::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 48px;
+    right: 48px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .preorder-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 20px;
+  }
+
+  .preorder-label::before {
+    content: '';
+    display: block;
+    width: 8px; height: 8px;
+    background: var(--signal);
     border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .preorder-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .preorder-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 400px;
+  }
+
+  .preorder-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+  }
+
+  .preorder-form input {
+    background: var(--carbon);
+    border: 0.5px solid var(--border);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 16px 20px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .preorder-form input::placeholder { color: var(--muted); }
+  .preorder-form input:focus { border-color: var(--signal); }
+
+  .preorder-form .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 18px;
+    font-size: 12px;
+    letter-spacing: 3px;
+  }
+
+  .form-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .preorder-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .stat {
+    background: var(--carbon);
+    padding: 28px 24px;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-num span { color: var(--signal); }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+  }
+
+  .compat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .compat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+  }
+
+  .compat-item::before {
+    content: '';
+    display: block;
+    width: 4px; height: 4px;
     background: var(--signal);
     flex-shrink: 0;
   }
 
-  .spec-dot.blue { background: var(--electric); }
-
-  /* Scan line overlay */
-  .scanlines {
-    position: fixed;
-    inset: 0;
-    z-index: 5;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.03) 2px,
-      rgba(0,0,0,0.03) 4px
-    );
-    pointer-events: none;
-  }
-
-  /* NFC pulse indicator */
-  .nfc-indicator {
-    position: fixed;
-    top: 50%;
-    right: 48px;
-    transform: translateY(-50%);
-    z-index: 10;
-    pointer-events: none;
-    opacity: 0;
-    animation: fadeIn 1s ease 2s forwards;
+  /* FOOTER */
+  footer {
+    padding: 40px 48px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    border-top: 0.5px solid var(--border);
   }
 
-  .nfc-pulse-ring {
-    width: 48px; height: 48px;
-    border: 0.5px solid rgba(61,90,254,0.4);
-    border-radius: 50%;
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .footer-logo span { color: var(--signal); }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* NFC SPOTLIGHT */
+  .nfc-section {
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    border-top: 0.5px solid var(--border);
     position: relative;
+    overflow: hidden;
   }
 
-  .nfc-pulse-ring::before, .nfc-pulse-ring::after {
+  .nfc-section::after {
     content: '';
     position: absolute;
-    inset: -8px;
-    border: 0.5px solid rgba(61,90,254,0.2);
-    border-radius: 50%;
-    animation: nfc-ripple 2s ease-out infinite;
+    bottom: -200px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(61,90,254,0.06) 0%, transparent 70%);
+    pointer-events: none;
   }
 
-  .nfc-pulse-ring::after {
-    inset: -16px;
-    animation-delay: 0.5s;
-  }
-
-  .nfc-center {
-    position: absolute;
-    inset: 0;
+  .nfc-visual {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 12px;
-    letter-spacing: 1px;
-    color: var(--electric);
   }
 
-  .nfc-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--electric);
-    text-transform: uppercase;
-    writing-mode: vertical-rl;
-  }
-
-  @keyframes nfc-ripple {
-    0% { opacity: 0.6; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1.4); }
-  }
-
-  /* Rotation hint */
-  .drag-hint {
-    position: fixed;
-    bottom: 48px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    opacity: 0;
-    animation: fadeIn 1s ease 2.5s forwards, fadeOut 1s ease 5s forwards;
+  .nfc-ring-wrap {
+    position: relative;
+    width: 260px;
+    height: 260px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
   }
 
-  .drag-hint::before, .drag-hint::after {
-    content: '←';
-    color: var(--signal);
+  .nfc-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 0.5px solid rgba(61,90,254,0.3);
+    animation: nfc-pulse 2.4s ease-out infinite;
   }
-  .drag-hint::after { content: '→'; }
 
-  @keyframes fadeIn { to { opacity: 1; } }
-  @keyframes fadeOut { to { opacity: 0; } }
+  .nfc-ring:nth-child(1) { width: 100%; height: 100%; animation-delay: 0s; }
+  .nfc-ring:nth-child(2) { width: 72%; height: 72%; animation-delay: 0.4s; }
+  .nfc-ring:nth-child(3) { width: 44%; height: 44%; animation-delay: 0.8s; }
 
-  /* Grain overlay */
-  .grain {
-    position: fixed;
-    inset: -50%;
+  @keyframes nfc-pulse {
+    0% { opacity: 0; transform: scale(0.85); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: scale(1.1); }
+  }
+
+  .nfc-core {
+    width: 88px;
+    height: 88px;
+    background: var(--carbon);
+    border: 0.5px solid #3D5AFE;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    position: relative;
+  }
+
+  .nfc-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: #3D5AFE;
+  }
+
+  .nfc-phone {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    width: 72px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    z-index: 3;
+  }
+
+  .nfc-phone-dot {
+    width: 20px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .nfc-phone-screen {
+    width: 52px;
+    height: 72px;
+    background: var(--carbon);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .nfc-screen-line {
+    width: 100%;
+    height: 3px;
+    background: #3D5AFE;
+    border-radius: 1px;
+    opacity: 0;
+    animation: screen-load 2.4s ease-in-out infinite;
+  }
+  .nfc-screen-line:nth-child(1) { animation-delay: 1.2s; }
+  .nfc-screen-line:nth-child(2) { width: 70%; animation-delay: 1.4s; opacity: 0.6; }
+  .nfc-screen-line:nth-child(3) { width: 85%; animation-delay: 1.6s; opacity: 0.4; }
+
+  @keyframes screen-load {
+    0%, 40% { opacity: 0; }
+    60%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .nfc-arrow {
+    position: absolute;
+    right: 68px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #3D5AFE;
+    opacity: 0;
+    animation: arrow-blink 2.4s ease-in-out infinite;
+    animation-delay: 0.8s;
     z-index: 4;
-    width: 200%; height: 200%;
-    opacity: 0.03;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    animation: grain-move 0.5s steps(2) infinite;
   }
 
-  @keyframes grain-move {
-    0% { transform: translate(0,0); }
-    25% { transform: translate(-2%,-2%); }
-    50% { transform: translate(2%, 2%); }
-    75% { transform: translate(-1%, 1%); }
-    100% { transform: translate(1%,-1%); }
+  @keyframes arrow-blink {
+    0%, 30% { opacity: 0; transform: translateY(-50%) translateX(-6px); }
+    60% { opacity: 1; transform: translateY(-50%) translateX(0); }
+    100% { opacity: 0; transform: translateY(-50%) translateX(2px); }
+  }
+
+  .nfc-mag-section {
+    margin-top: 48px;
+    padding-top: 48px;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .mag-visual {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 32px 0;
+    position: relative;
+  }
+
+  .mag-lid {
+    width: 160px;
+    height: 32px;
+    background: var(--carbon);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: mag-float 3s ease-in-out infinite;
+  }
+
+  @keyframes mag-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .mag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--signal);
+    margin: 0 3px;
+  }
+
+  .mag-body {
+    width: 160px;
+    height: 32px;
+    background: var(--surface);
+    border: 0.5px solid var(--muted);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+  }
+
+  .mag-body-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    margin: 0 3px;
+  }
+
+  .mag-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* RESPONSIVE additions */
+  @media (max-width: 900px) {
+    .nfc-section { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+    .nfc-ring-wrap { width: 200px; height: 200px; }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
+    .hero-visual { order: -1; }
+    .hero-img-wrap { max-width: 340px; margin: 0 auto; }
+    .features { padding: 80px 24px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .gallery { padding: 0 24px 80px; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-item.tall { grid-row: span 1; }
+    .preorder { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 12px; text-align: center; }
   }
 </style>
 </head>
 <body>
 
-<div id="canvas-container"></div>
-<div class="scanlines"></div>
-<div class="grain"></div>
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">GC<span>°</span></a>
+    <a href="#preorder" class="nav-cta">Pre-order</a>
+  </div>
+</nav>
+<div class="page-wrap">
 
-<div class="ui">
-  <div class="ui-top">
-    <div class="logo">GC<span>°</span></div>
-    <div class="ui-tag">
-      <strong>Product render</strong>
-      Display frame — v1<br>
-      Matte black
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Now taking pre-orders</div>
+    <h1 class="hero-title">
+      Display<br>your grade.<br>
+      <em>Own the wall.</em>
+    </h1>
+    <p class="hero-sub">Custom-manufactured display frames engineered for PSA and WATA graded video games. Wall mount or desk stand. Built for collectors who don't compromise.</p>
+    <div class="hero-actions">
+      <a href="#preorder" class="btn-primary">Reserve yours</a>
+      <a href="#features" class="btn-ghost">See features</a>
     </div>
   </div>
 
-  <div class="ui-bottom">
-    <div class="ui-title">
-      <h1>Display<br>frame<br><em>GC°</em></h1>
-      <p>Engineered for the obsessed.</p>
+  <div class="hero-visual">
+    <div class="hero-img-wrap">
+      <img src="IMG_5702.png" alt="Graded Collection display frames mounted on wall showing five graded Halo games">
+      <div class="grade-badge">
+        <div class="grade-num">9.8</div>
+        <div class="grade-label">Display ready</div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="ui-specs">
-      <div class="spec-item"><span>Magnetic lid closure</span><div class="spec-dot"></div></div>
-      <div class="spec-item"><span>NFC embedded</span><div class="spec-dot blue"></div></div>
-      <div class="spec-item"><span>PSA + WATA compatible</span><div class="spec-dot"></div></div>
-      <div class="spec-item"><span>Wall mount + desk stand</span><div class="spec-dot"></div></div>
-      <div class="spec-item"><span>Matte black finish</span><div class="spec-dot"></div></div>
-    </div>
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">PSA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">WATA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Magnetic Lid <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NFC Enabled <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Wall Mount <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Desk Stand <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Matte Black Finish <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Front &amp; Back Visibility <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Precision Fit <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Engineered for the Obsessed <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">PSA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">WATA Compatible <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Magnetic Lid <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">NFC Enabled <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Wall Mount <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Desk Stand <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Matte Black Finish <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Front &amp; Back Visibility <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Precision Fit <span class="ticker-dot">◆</span></span>
+    <span class="ticker-item">Engineered for the Obsessed <span class="ticker-dot">◆</span></span>
   </div>
 </div>
 
-<div class="nfc-indicator">
-  <div class="nfc-label">NFC</div>
-  <div class="nfc-pulse-ring">
-    <div class="nfc-center">◉</div>
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Why GC°</div>
+  <h2 class="section-title">Built different.</h2>
+
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-num">01</div>
+      <div class="feature-title">Precision fit</div>
+      <p class="feature-desc">Machined to exact WATA and PSA slab dimensions. Snap in, no rattle, no shimming, no compromises.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">02</div>
+      <div class="feature-title">Front & back visibility</div>
+      <p class="feature-desc">Clear acrylic window on both sides. See the grade label, read the box details — without ever touching the slab.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">03</div>
+      <div class="feature-title">Magnetic lid</div>
+      <p class="feature-desc">The top lid attaches via concealed magnets — worry-free loading with a satisfying, secure hold. No clips, no screws, no stress.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">04</div>
+      <div class="feature-title">NFC embedded</div>
+      <p class="feature-desc">A hidden NFC tag inside the lid lets you program your certification URL. Tap any smartphone to pull up your PSA or WATA listing instantly.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">05</div>
+      <div class="feature-title">Two display modes</div>
+      <p class="feature-desc">Integrated desk stand for shelf display. Keyhole wall mounts built into the back. One frame, two ways to flex.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">06</div>
+      <div class="feature-title">Matte black finish</div>
+      <p class="feature-desc">Textured matte black coating disappears behind your game art. The frame is the frame — not the focus.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">07</div>
+      <div class="feature-title">Gallery-ready</div>
+      <p class="feature-desc">Consistent sizing means your collection lines up perfectly. Build a wall worth photographing.</p>
+    </div>
+    <div class="feature-card fade-up">
+      <div class="feature-num">08</div>
+      <div class="feature-title">Custom manufactured</div>
+      <p class="feature-desc">Not a shelf product. Not an adapter. Engineered from the ground up specifically for graded games.</p>
+    </div>
   </div>
-</div>
+</section>
 
-<div class="drag-hint">drag to rotate</div>
+<!-- GALLERY -->
+<section class="gallery">
+  <div class="gallery-grid">
+    <div class="gallery-item tall">
+      <img src="IMG_5682.png" alt="Graded Collection frame front view with Halo 2 WATA 9.8">
+      <div class="gallery-caption">Desk stand — front view</div>
+    </div>
+    <div class="gallery-item">
+      <img src="IMG_5683.png" alt="Graded Collection frame rear view showing back of graded game">
+      <div class="gallery-caption">Full rear visibility</div>
+    </div>
+    <div class="gallery-item-wide">
+      <img src="images/halo-row.png" alt="Five graded Halo games displayed on wall in Graded Collection frames">
+      <div class="gallery-caption">Wall gallery — five deep</div>
+    </div>
+  </div>
+</section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- NFC + MAGNETIC SPOTLIGHT -->
+<section class="nfc-section">
+  <div>
+    <div class="section-label">Smart by design</div>
+    <h2 class="section-title" style="font-size: clamp(36px,4vw,56px); margin-bottom:20px;">Tap to verify.<br>Snap to secure.</h2>
+    <p style="font-size:15px;font-weight:300;color:var(--text-secondary);line-height:1.7;max-width:420px;margin-bottom:40px;">
+      Two features that no other display frame has. Each GC° frame ships with a hidden NFC tag embedded in the lid and a precision magnetic closure — so your collection is as smart as it is secure.
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:0;border:0.5px solid var(--border);">
+      <div style="padding:28px 32px;border-bottom:0.5px solid var(--border);">
+        <div style="font-size:10px;letter-spacing:3px;color:#3D5AFE;font-weight:500;text-transform:uppercase;margin-bottom:10px;">NFC tag — embedded</div>
+        <div style="font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Tap any phone. Pull up the listing.</div>
+        <p style="font-size:14px;font-weight:300;color:var(--text-secondary);line-height:1.6;">Program your certification URL once. Any NFC-capable smartphone held near the lid instantly opens your PSA or WATA cert page — no app, no QR code, no friction.</p>
+      </div>
+      <div style="padding:28px 32px;">
+        <div style="font-size:10px;letter-spacing:3px;color:var(--signal);font-weight:500;text-transform:uppercase;margin-bottom:10px;">Magnetic lid — concealed</div>
+        <div style="font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Worry-free loading. Rock-solid hold.</div>
+        <p style="font-size:14px;font-weight:300;color:var(--text-secondary);line-height:1.6;">The lid is held by embedded magnets — strong enough to stay put on the wall, easy enough to open without tools. Load your slab safely, every time.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="nfc-visual">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:64px;width:100%;">
+
+      <!-- NFC animation -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="nfc-ring-wrap">
+          <div class="nfc-ring"></div>
+          <div class="nfc-ring"></div>
+          <div class="nfc-ring"></div>
+          <div class="nfc-core">
+            <div class="nfc-icon">NFC</div>
+          </div>
+          <div class="nfc-arrow">→</div>
+          <div class="nfc-phone">
+            <div class="nfc-phone-dot"></div>
+            <div class="nfc-phone-screen">
+              <div class="nfc-screen-line"></div>
+              <div class="nfc-screen-line"></div>
+              <div class="nfc-screen-line"></div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase;">Tap → cert page opens</div>
+      </div>
+
+      <!-- Magnetic animation -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="font-size:10px;letter-spacing:3px;color:var(--signal);text-transform:uppercase;margin-bottom:12px;">Magnetic closure</div>
+        <div class="mag-visual" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="mag-lid">
+            <div class="mag-dot"></div>
+            <div class="mag-dot"></div>
+            <div class="mag-dot"></div>
+          </div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:1px;">↓ secure</div>
+          <div class="mag-body">
+            <div class="mag-body-dot"></div>
+            <div class="mag-body-dot"></div>
+            <div class="mag-body-dot"></div>
+          </div>
+        </div>
+        <div style="font-size:11px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase;margin-top:8px;">No clips. No screws.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PRE-ORDER -->
+<section class="preorder" id="preorder">
+  <div>
+    <div class="preorder-label">Pre-order open</div>
+    <h2 class="preorder-title">Reserve your frame.</h2>
+    <p class="preorder-sub">First batch is limited. Drop your info and we'll reach out with pricing, sizing options, and your place in line.</p>
+
+    <div class="preorder-stats">
+      <div class="stat">
+        <div class="stat-num">PSA<span> +</span></div>
+        <div class="stat-label">WATA compatible</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2<span>x</span></div>
+        <div class="stat-label">display modes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">360<span>°</span></div>
+        <div class="stat-label">slab visibility</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">Ltd<span>.</span></div>
+        <div class="stat-label">first run batch</div>
+      </div>
+    </div>
+
+    <div class="compat-list">
+      <div class="compat-item">Compatible with WATA graded standard cases</div>
+      <div class="compat-item">Compatible with PSA graded video game slabs</div>
+      <div class="compat-item">Available in NES, SNES, N64, PS1, Xbox & more</div>
+      <div class="compat-item">Matte black — additional finishes coming soon</div>
+    </div>
+  </div>
+
+  <div>
+    <form class="preorder-form" onsubmit="handleSubmit(event)">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Email address" required>
+      <input type="text" name="collection" placeholder="What system(s) do you collect? (e.g. Xbox, NES)">
+      <button type="submit" class="btn-primary">Secure your spot →</button>
+      <p class="form-note">No payment now. We'll be in touch before anything ships.</p>
+    </form>
+    <div id="form-success" style="display:none; padding: 32px; border: 0.5px solid var(--signal-border); background: var(--signal-dim); text-align: center;">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--signal); letter-spacing:2px; margin-bottom:8px;">You're on the list.</div>
+      <div style="font-size:14px; color:var(--text-secondary); font-weight:300;">We'll reach out with details before the first batch ships.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">GRADED COLLECTION<span>°</span></a>
+  <div class="footer-note">© 2024 Graded Collection. Engineered for the obsessed.</div>
+</footer>
+
 <script>
-(function() {
-  const container = document.getElementById('canvas-container');
-  const W = window.innerWidth, H = window.innerHeight;
-
-  // Scene
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x080808);
-  scene.fog = new THREE.Fog(0x080808, 8, 22);
-
-  // Camera
-  const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 100);
-  camera.position.set(0, 0.5, 6.5);
-  camera.lookAt(0, 0, 0);
-
-  // Renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(W, H);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
-  container.appendChild(renderer.domElement);
-
-  // ── MATERIALS ──────────────────────────────────────────────
-  const matteMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a1a,
-    roughness: 0.88,
-    metalness: 0.12,
-  });
-
-  const acrylicMat = new THREE.MeshPhysicalMaterial({
-    color: 0x111820,
-    roughness: 0.04,
-    metalness: 0.0,
-    transmission: 0.7,
-    transparent: true,
-    opacity: 0.55,
-    thickness: 0.08,
-    ior: 1.5,
-    reflectivity: 0.8,
-  });
-
-  const edgeMat = new THREE.MeshStandardMaterial({
-    color: 0x2a2a2a,
-    roughness: 0.6,
-    metalness: 0.4,
-  });
-
-  const nfcMat = new THREE.MeshStandardMaterial({
-    color: 0x3D5AFE,
-    roughness: 0.3,
-    metalness: 0.6,
-    emissive: 0x1a2680,
-    emissiveIntensity: 0.4,
-  });
-
-  const signalMat = new THREE.MeshStandardMaterial({
-    color: 0xc8ff00,
-    roughness: 0.4,
-    metalness: 0.1,
-    emissive: 0x507000,
-    emissiveIntensity: 0.3,
-  });
-
-  const keyholeMat = new THREE.MeshStandardMaterial({
-    color: 0x080808,
-    roughness: 0.9,
-    metalness: 0.0,
-  });
-
-  // ── FRAME GEOMETRY ─────────────────────────────────────────
-  // Dimensions (roughly scaled to real Xbox case proportions)
-  // Body: width=1.8, height=2.4, depth=0.5
-  const fw = 1.8, fh = 2.4, fd = 0.5;
-  const wall = 0.07; // frame wall thickness
-  const lidH = 0.18;
-
-  const frameGroup = new THREE.Group();
-
-  // — BODY (outer shell, hollow front/back) —
-  // Bottom bar
-  const bottomGeo = new THREE.BoxGeometry(fw, wall, fd);
-  const bottom = new THREE.Mesh(bottomGeo, matteMat);
-  bottom.position.set(0, -(fh/2 - wall/2), 0);
-  bottom.castShadow = true;
-  frameGroup.add(bottom);
-
-  // Left bar
-  const sideGeo = new THREE.BoxGeometry(wall, fh - lidH, fd);
-  const leftBar = new THREE.Mesh(sideGeo, matteMat);
-  leftBar.position.set(-(fw/2 - wall/2), -lidH/2, 0);
-  leftBar.castShadow = true;
-  frameGroup.add(leftBar);
-
-  // Right bar
-  const rightBar = new THREE.Mesh(sideGeo, matteMat);
-  rightBar.position.set(fw/2 - wall/2, -lidH/2, 0);
-  rightBar.castShadow = true;
-  frameGroup.add(rightBar);
-
-  // Back plate (slightly recessed)
-  const backGeo = new THREE.BoxGeometry(fw - wall*2, fh - lidH - wall, 0.025);
-  const backPlate = new THREE.Mesh(backGeo, matteMat);
-  backPlate.position.set(0, -lidH/2, -(fd/2 - 0.013));
-  backPlate.castShadow = true;
-  frameGroup.add(backPlate);
-
-  // Front acrylic window
-  const frontGeo = new THREE.BoxGeometry(fw - wall*2 - 0.04, fh - lidH - wall - 0.04, 0.018);
-  const frontAcrylic = new THREE.Mesh(frontGeo, acrylicMat);
-  frontAcrylic.position.set(0, -lidH/2, fd/2 - 0.01);
-  frameGroup.add(frontAcrylic);
-
-  // Back acrylic window (slightly smaller, more recessed)
-  const backAcrylicGeo = new THREE.BoxGeometry(fw - wall*2 - 0.08, fh - lidH - wall - 0.08, 0.018);
-  const backAcrylic = new THREE.Mesh(backAcrylicGeo, acrylicMat);
-  backAcrylic.position.set(0, -lidH/2, -(fd/2 - 0.035));
-  frameGroup.add(backAcrylic);
-
-  // Front rim (thin raised border around acrylic)
-  const rimMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7, metalness: 0.3 });
-
-  // — DESK STAND (bottom tab) —
-  const standGeo = new THREE.BoxGeometry(fw * 0.6, wall * 1.2, fd * 1.3);
-  const stand = new THREE.Mesh(standGeo, matteMat);
-  stand.position.set(0, -(fh/2 + wall*0.6), 0.06);
-  stand.castShadow = true;
-  frameGroup.add(stand);
-
-  // Stand lip
-  const lipGeo = new THREE.BoxGeometry(fw * 0.6, wall * 0.6, 0.06);
-  const lip = new THREE.Mesh(lipGeo, edgeMat);
-  lip.position.set(0, -(fh/2 + wall*0.9), fd * 0.65 * 0.5 + 0.03);
-  frameGroup.add(lip);
-
-  // — KEYHOLE MOUNT (back plate) —
-  for (let kx of [-0.4, 0.4]) {
-    const khGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.03, 16);
-    const kh = new THREE.Mesh(khGeo, keyholeMat);
-    kh.rotation.x = Math.PI / 2;
-    kh.position.set(kx, 0.4, -(fd/2 - 0.038));
-    frameGroup.add(kh);
-
-    // Small screw head look
-    const screwGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.01, 8);
-    const screw = new THREE.Mesh(screwGeo, edgeMat);
-    screw.rotation.x = Math.PI / 2;
-    screw.position.set(kx, 0.4, -(fd/2 - 0.025));
-    frameGroup.add(screw);
-  }
-
-  // — MAGNETIC LID ——————————————————————————————
-  const lidGroup = new THREE.Group();
-
-  // Lid main body
-  const lidGeo = new THREE.BoxGeometry(fw, lidH, fd);
-  const lid = new THREE.Mesh(lidGeo, matteMat);
-  lid.castShadow = true;
-  lidGroup.add(lid);
-
-  // Lid front edge chamfer strip
-  const chamferGeo = new THREE.BoxGeometry(fw, lidH * 0.15, 0.015);
-  const chamfer = new THREE.Mesh(chamferGeo, edgeMat);
-  chamfer.position.set(0, 0, fd/2 + 0.007);
-  lidGroup.add(chamfer);
-
-  // NFC chip (embedded on underside of lid, slightly visible)
-  const nfcGeo = new THREE.BoxGeometry(0.22, 0.016, 0.14);
-  const nfcChip = new THREE.Mesh(nfcGeo, nfcMat);
-  nfcChip.position.set(0.3, -lidH/2 + 0.008, 0);
-  lidGroup.add(nfcChip);
-
-  // NFC antenna trace (thin ring)
-  const nfcRingGeo = new THREE.TorusGeometry(0.18, 0.006, 8, 32);
-  const nfcRing = new THREE.Mesh(nfcRingGeo, nfcMat);
-  nfcRing.rotation.x = Math.PI / 2;
-  nfcRing.position.set(0.3, -lidH/2 + 0.01, 0);
-  lidGroup.add(nfcRing);
-
-  // Magnet dots (visible as small circles on lid underside)
-  const magnetPositions = [-0.6, -0.2, 0.2, 0.6];
-  magnetPositions.forEach(mx => {
-    const magGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.012, 16);
-    const mag = new THREE.Mesh(magGeo, signalMat);
-    mag.rotation.x = Math.PI / 2;
-    mag.position.set(mx, -lidH/2 + 0.006, 0);
-    lidGroup.add(mag);
-  });
-
-  // Position lid at top of frame
-  lidGroup.position.set(0, fh/2 - lidH/2, 0);
-  frameGroup.add(lidGroup);
-
-  // ── FLOATING PARTICLES (subtle dust) ───────────────────────
-  const particleCount = 60;
-  const particleGeo = new THREE.BufferGeometry();
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    positions[i * 3]     = (Math.random() - 0.5) * 6;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 6;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
-  }
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const particleMat = new THREE.PointsMaterial({
-    color: 0x333333,
-    size: 0.012,
-    transparent: true,
-    opacity: 0.6,
-  });
-  const particles = new THREE.Points(particleGeo, particleMat);
-  scene.add(particles);
-
-  // ── GROUND REFLECTION PLANE ────────────────────────────────
-  const groundGeo = new THREE.PlaneGeometry(20, 20);
-  const groundMat = new THREE.MeshStandardMaterial({
-    color: 0x0a0a0a,
-    roughness: 0.2,
-    metalness: 0.8,
-  });
-  const ground = new THREE.Mesh(groundGeo, groundMat);
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -(fh/2 + wall * 1.5);
-  ground.receiveShadow = true;
-  scene.add(ground);
-
-  // ── SCENE GROUP ────────────────────────────────────────────
-  const pivot = new THREE.Group();
-  pivot.add(frameGroup);
-  scene.add(pivot);
-
-  // ── LIGHTING ───────────────────────────────────────────────
-  // Ambient — very dark
-  const ambient = new THREE.AmbientLight(0xffffff, 0.08);
-  scene.add(ambient);
-
-  // Key light — cool white from upper left
-  const keyLight = new THREE.SpotLight(0xd0e8ff, 3.5, 20, Math.PI * 0.18, 0.4, 1.5);
-  keyLight.position.set(-3.5, 5, 4);
-  keyLight.castShadow = true;
-  keyLight.shadow.mapSize.width = 2048;
-  keyLight.shadow.mapSize.height = 2048;
-  keyLight.shadow.camera.near = 0.5;
-  keyLight.shadow.camera.far = 20;
-  scene.add(keyLight);
-
-  // Fill light — very dim warm from right
-  const fillLight = new THREE.PointLight(0xffe8c0, 0.4, 12);
-  fillLight.position.set(4, 0, 3);
-  scene.add(fillLight);
-
-  // Rim light — signal green from behind/below
-  const rimLight = new THREE.PointLight(0xc8ff00, 0.6, 8);
-  rimLight.position.set(0.5, -2, -3.5);
-  scene.add(rimLight);
-
-  // NFC accent — electric blue glow near lid
-  const nfcLight = new THREE.PointLight(0x3D5AFE, 0.8, 3);
-  nfcLight.position.set(0.3, fh/2, 0.5);
-  scene.add(nfcLight);
-
-  // Top strip light (simulates studio softbox)
-  const topLight = new THREE.RectAreaLight(0xffffff, 1.5, 3, 0.5);
-  topLight.position.set(0, 5, 2);
-  topLight.lookAt(0, 0, 0);
-  scene.add(topLight);
-
-  // ── MOUSE DRAG ROTATION ────────────────────────────────────
-  let isDragging = false;
-  let prevMouse = { x: 0, y: 0 };
-  let targetRotY = 0.3, targetRotX = 0.05;
-  let currentRotY = 0.3, currentRotX = 0.05;
-  let autoRotate = true;
-  let autoRotateTimer = null;
-
-  renderer.domElement.addEventListener('mousedown', e => {
-    isDragging = true;
-    autoRotate = false;
-    prevMouse = { x: e.clientX, y: e.clientY };
-    clearTimeout(autoRotateTimer);
-  });
-
-  renderer.domElement.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    const dx = e.clientX - prevMouse.x;
-    const dy = e.clientY - prevMouse.y;
-    targetRotY += dx * 0.008;
-    targetRotX += dy * 0.004;
-    targetRotX = Math.max(-0.4, Math.min(0.4, targetRotX));
-    prevMouse = { x: e.clientX, y: e.clientY };
-  });
-
-  renderer.domElement.addEventListener('mouseup', () => {
-    isDragging = false;
-    autoRotateTimer = setTimeout(() => { autoRotate = true; }, 3000);
-  });
-
-  // Touch support
-  renderer.domElement.addEventListener('touchstart', e => {
-    isDragging = true;
-    autoRotate = false;
-    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  });
-
-  renderer.domElement.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    const dx = e.touches[0].clientX - prevMouse.x;
-    const dy = e.touches[0].clientY - prevMouse.y;
-    targetRotY += dx * 0.008;
-    targetRotX += dy * 0.004;
-    targetRotX = Math.max(-0.4, Math.min(0.4, targetRotX));
-    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  });
-
-  renderer.domElement.addEventListener('touchend', () => {
-    isDragging = false;
-    autoRotateTimer = setTimeout(() => { autoRotate = true; }, 3000);
-  });
-
-  // ── LID ANIMATION ──────────────────────────────────────────
-  // Lid gently lifts open and closes every ~8 seconds
-  let lidPhase = 0; // 0 = closed, will animate open then closed
-  let lidOpenT = 0;
-  const lidOpenDelay = 3.5; // seconds before first open
-  const lidOpenDuration = 1.2;
-  const lidCloseDuration = 0.9;
-  const lidHoldDuration = 1.8;
-  let lidState = 'waiting'; // waiting | opening | open | closing
-  let lidTimer = 0;
-  const lidMaxAngle = -Math.PI * 0.55; // how far lid swings back
-
-  // NFC light pulse
-  let nfcPulse = 0;
-
-  // ── ANIMATION LOOP ─────────────────────────────────────────
-  const clock = new THREE.Clock();
-  let elapsed = 0;
-
-  function easeInOut(t) {
-    return t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-  }
-
-  function easeOut(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
-
-  function animate() {
-    requestAnimationFrame(animate);
-    const delta = clock.getDelta();
-    elapsed += delta;
-
-    // Auto rotate
-    if (autoRotate) {
-      targetRotY += delta * 0.28;
-    }
-
-    // Smooth damping
-    currentRotY += (targetRotY - currentRotY) * 0.06;
-    currentRotX += (targetRotX - currentRotX) * 0.06;
-    pivot.rotation.y = currentRotY;
-    pivot.rotation.x = currentRotX;
-
-    // Lid animation sequence
-    lidTimer += delta;
-    if (lidState === 'waiting' && lidTimer > lidOpenDelay) {
-      lidState = 'opening';
-      lidTimer = 0;
-    } else if (lidState === 'opening') {
-      const t = Math.min(lidTimer / lidOpenDuration, 1);
-      lidGroup.rotation.x = easeInOut(t) * lidMaxAngle;
-      if (t >= 1) { lidState = 'open'; lidTimer = 0; }
-    } else if (lidState === 'open') {
-      // Gentle float while open
-      lidGroup.rotation.x = lidMaxAngle + Math.sin(elapsed * 1.5) * 0.02;
-      if (lidTimer > lidHoldDuration) { lidState = 'closing'; lidTimer = 0; }
-    } else if (lidState === 'closing') {
-      const t = Math.min(lidTimer / lidCloseDuration, 1);
-      lidGroup.rotation.x = lidMaxAngle * (1 - easeOut(t));
-      if (t >= 1) {
-        lidGroup.rotation.x = 0;
-        lidState = 'waiting';
-        lidTimer = 0;
+  // Scroll animations
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
       }
-    }
+    });
+  }, { threshold: 0.1 });
+  fadeEls.forEach(el => observer.observe(el));
 
-    // NFC light pulse — active when lid is open
-    if (lidState === 'open' || lidState === 'opening') {
-      nfcPulse = Math.min(nfcPulse + delta * 2, 1);
-    } else {
-      nfcPulse = Math.max(nfcPulse - delta * 1.5, 0);
-    }
-    nfcLight.intensity = 0.3 + nfcPulse * (0.8 + Math.sin(elapsed * 4) * 0.3);
-
-    // Rim light breathe
-    rimLight.intensity = 0.4 + Math.sin(elapsed * 0.7) * 0.2;
-
-    // Particle drift
-    const pos = particles.geometry.attributes.position.array;
-    for (let i = 0; i < particleCount; i++) {
-      pos[i * 3 + 1] += delta * 0.015;
-      if (pos[i * 3 + 1] > 3) pos[i * 3 + 1] = -3;
-    }
-    particles.geometry.attributes.position.needsUpdate = true;
-
-    // Subtle frame bob
-    frameGroup.position.y = Math.sin(elapsed * 0.5) * 0.03;
-
-    renderer.render(scene, camera);
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    document.querySelector('.preorder-form').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
   }
 
-  animate();
-
-  // Resize
-  window.addEventListener('resize', () => {
-    const W = window.innerWidth, H = window.innerHeight;
-    camera.aspect = W / H;
-    camera.updateProjectionMatrix();
-    renderer.setSize(W, H);
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.borderBottomColor = window.scrollY > 40 ? '#2a2a2a' : 'transparent';
   });
-
-})();
 </script>
+
+</div><!-- end page-wrap -->
+
 </body>
 </html>
